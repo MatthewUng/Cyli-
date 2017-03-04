@@ -10,6 +10,9 @@ class Game:
         """swapping rectangle i with rectangle j"""
         pass
 
+    def change_color(self, i, color):
+        """color is... something"""
+
     def get_states(self, i):
         """returns: array of numbers"""
         pass
