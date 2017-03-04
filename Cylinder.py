@@ -1,20 +1,33 @@
-import pyglet
+from enum import enum
 
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
+class Placement(Enum):
+	FAST = auto()
+	SLOW = auto()
+	NONE = auto()
 
 class Cylinder:
-    def __init__(self, x, y, name):
-        self.length=20
-        self.name = name
-        pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', (x, y,
-                                                             x, y+self.length,
-                                                             x+self.length, y+self.length,
-                                                             x+self.length, y)),
-                                                    ('c3B', BLUE*4))
+	def __init__(self, temperature, placement = Placement.NONE):
+		self.temperature = temperature
+		self.placement = placement
+		self.bucket = 0
 
-        pyglet.text.Label(str(self.name), font_name="Arial", x=x+self.length/2,
-                                                             y=y+self.length/2,
-                              anchor_x="center", anchor_y="center").draw()
+	def getTemperature(self):
+		return self.temperature
 
+	def setTemperature(self, temperature):
+		self.temperature = temperature
+
+	'''Takes in number 1 to 10 representing color. 1 is strongest Blue, 10 is strongest Red'''
+	def setColorBucket(self, bucket):
+		self.bucket = bucket
+
+	'''Returns number 1 to 10 representing color. 1 is strongest Blue, 10 is strongest Red'''
+    def getColorBucket(self, bucket):
+    	return self.bucket
+
+	def getPlacement(self):
+		return self.placement
+
+	def setPlacement(self, placement):
+		self.placement = placement
 
