@@ -1,2 +1,4 @@
 # Cyli-
-UCSD Teradata Hackathon 
+
+Optimizing storage of data cylinders through the use of reinforcement learning.
+
