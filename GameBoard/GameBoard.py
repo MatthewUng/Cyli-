@@ -1,5 +1,6 @@
 import pyglet
 from UI_Cylinder import UI_Cylinder
+import random
 
 WHITE = (255, 255, 255)
 LIGHT_GREY = (170, 170, 170)
@@ -9,15 +10,19 @@ BLACK = (0, 0, 0)
 
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+COLOR_GRADIENT = [(0+(255/9*i), 0, 255-(255/9*i)) for i in range(9)]
+
 
 class GameBoard(pyglet.window.Window):
 
-    def __init__(self, num, numFast, length=600):
+    def __init__(self, num, numFast, colors, length=600):
         super(GameBoard, self).__init__(length, length)
         self.length = length
         self.num = num
         self.numFast = numFast
+        self.cylinders = list()
         self.score = 0
+        self.colors = colors
 
     def on_draw(self):
 
@@ -40,16 +45,61 @@ class GameBoard(pyglet.window.Window):
 
 
         self.score = None
-
         self.update_score(0)
-
-        temp = UI_Cylinder(100, 100, 0, BLUE)
-        temp.change_color_name(RED, '2')
+        self._init_rectangles(self.colors)
 
         print "drawing complete"
 
-    def _init_rectangles(self, num, colors):
-        pass
+    def _init_rectangles(self, colors):
+
+        max_per_row = 1
+        while max_per_row*30 < self.length-200:
+            max_per_row += 1
+
+        row_width = 30 * max_per_row
+        center = self.length/2
+
+        fast_rows = (self.numFast / max_per_row)
+        if self.numFast % max_per_row:
+            fast_rows += 1
+
+        slow_rows = (self.num - self.numFast) / max_per_row
+        if (self.num - self.numFast) % max_per_row:
+            slow_rows += 1
+
+        print "fast, slow rows", fast_rows, slow_rows
+
+        top = self.length - 22
+        middle = self.length * 2 /3
+        bottom = 0
+
+        print "top, middle, top", top, middle, bottom
+
+        top_diff = (top-middle) / fast_rows
+        bottom_diff = (middle-bottom) / slow_rows
+
+        print "top_diff, bottom_diff", top_diff, bottom_diff
+
+        if top_diff < 30 or bottom_diff < 30:
+            print "error in creating board\nboard is too small"
+
+        for i in range(self.num):
+            if i < self.numFast:
+                curr_row = i / max_per_row + 1
+
+                x = center - row_width/2 + 30*(i%max_per_row)
+                y = middle + (top_diff * curr_row) / 2 - 15
+                temp = UI_Cylinder(x, y, i, colors[i])
+                self.cylinders.append(temp)
+            else:
+
+                k = i - self.numFast
+                curr_row = k / max_per_row + 1
+                x = center -row_width/2 + 30*(k%max_per_row)
+                y = bottom + (bottom_diff * curr_row) /2 -15
+
+                temp = UI_Cylinder(x, y, i, colors[i])
+                self.cylinders.append(temp)
 
     def update_score(self, score):
         pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', (0, self.length -22,
@@ -65,9 +115,13 @@ class GameBoard(pyglet.window.Window):
         self.score_label.set_style('color', (0, 0, 0, 255))
         self.score_label.draw()
 
+    def swap(self, i, j):
+        pass
 
 if __name__ == "__main__":
-    g = GameBoard(6 ,3)
+    colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
+    print colors
+    g = GameBoard(50, 20, colors)
     pyglet.app.run()
 
     print "after running"

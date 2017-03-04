@@ -12,14 +12,9 @@ class UI_Cylinder:
                                                       x, y+self.length,
                                                       x+self.length, y+self.length,
                                                       x+self.length, y)),
-                                                     ('c3B', BLUE*4))
+                                                     ('c3B', color*4))
 
         self.vertex.draw(pyglet.gl.GL_QUADS)
-        """pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', (x, y,
-                                                             x, y+self.length,
-                                                             x+self.length, y+self.length,
-                                                             x+self.length, y)),
-                                                    ('c3B', BLUE*4))"""
 
         self.label = pyglet.text.Label(str(self.name),
                                        font_name="Arial",
