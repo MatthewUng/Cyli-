@@ -1,17 +1,7 @@
 import pyglet
 from UI_Cylinder import UI_Cylinder
+from Colors import *
 import random
-
-WHITE = (255, 255, 255)
-LIGHT_GREY = (170, 170, 170)
-GREY = (100, 100, 100)
-DARK_GREY = (25, 25, 25)
-BLACK = (0, 0, 0)
-
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-COLOR_GRADIENT = [(0+(255/9*i), 0, 255-(255/9*i)) for i in range(9)]
-
 
 class GameBoard(pyglet.window.Window):
 
@@ -49,8 +39,6 @@ class GameBoard(pyglet.window.Window):
 
         self.update_score(0)
         self._init_rectangles(self.colors)
-
-        print "drawing complete"
 
     def update_date(self, date):
         pyglet.graphics.draw(4,
@@ -122,6 +110,8 @@ class GameBoard(pyglet.window.Window):
                 temp = UI_Cylinder(x, y, i, colors[i])
                 self.cylinders.append(temp)
 
+        self.swap(0, 10)
+
     def update_score(self, score):
         pyglet.graphics.draw(4,
                              pyglet.gl.GL_QUADS,
@@ -141,11 +131,18 @@ class GameBoard(pyglet.window.Window):
             self.date_label.draw()
 
     def swap(self, i, j):
-        pass
+        i_name, i_color = self.cylinders[i].get_attributes()
+        j_name, j_color = self.cylinders[j].get_attributes()
+        self.cylinders[i].change_color_name(j_color, j_name)
+        self.cylinders[j].change_color_name(i_color, i_name)
 
 if __name__ == "__main__":
-    colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
-    g = GameBoard(50, 20, colors)
-    pyglet.app.run()
+    colors = list()
+    colors.append(RED)
+    for _ in range(19):
+        colors.append(BLUE)
 
-    print "after running"
+    #colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
+    g = GameBoard(20, 10, colors)
+    pyglet.app.run()
+    print "fml"
