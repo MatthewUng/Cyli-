@@ -1,11 +1,25 @@
 
 # TODO: everything
 class Game:
+    cylinders = []
+
+    """total: total number of cylinders 
+    fast_size: size of fast portion"""
     def __init__(self, total, fast_size):
-        """total: total number of cylinders
-           fast_size: size of fast portion"""
+        self.maxTemp = 0
+        self.minTemp = 0
+
+        __setMinMaxTemps() 
         pass
 
+    # Private methods for internal use
+    def __setMinMaxTemps(self):
+        pass
+
+    def __initRandomCylinders(self):
+        pass
+
+    # Public Methods
     def swap(self, i, j):
         """swapping rectangle i with rectangle j"""
         pass
