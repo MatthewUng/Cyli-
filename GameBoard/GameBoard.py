@@ -22,6 +22,9 @@ class GameBoard(pyglet.window.Window):
         self.numFast = numFast
         self.cylinders = list()
         self.score = 0
+        self.score_label = None
+        self.date_label = None
+        self.date = None
         self.colors = colors
 
     def on_draw(self):
@@ -44,11 +47,29 @@ class GameBoard(pyglet.window.Window):
         pyglet.text.Label("Slow", font_name="Arial", font_size=16, x=10, y=self.length*2/3-25).draw()
 
 
-        self.score = None
         self.update_score(0)
         self._init_rectangles(self.colors)
 
         print "drawing complete"
+
+    def update_date(self, date):
+        pyglet.graphics.draw(4,
+                             pyglet.gl.GL_QUADS,
+                             ('v2i', (0, self.length - 22,
+                                      0, self.length,
+                                      self.length, self.length,
+                                      self.length, self.length - 22)),
+                             ('c3B', WHITE * 4))
+        self.score_label.draw()
+        self.date = date
+        self.date_label = pyglet.text.Label(date,
+                                          font_name="Arial",
+                                          font_size=16,
+                                          x=self.length,
+                                          y=self.length-20,
+                                          anchor_x='right')
+        self.date_label.set_style('color', (0, 0, 0, 255))
+        self.date_label.draw()
 
     def _init_rectangles(self, colors):
 
@@ -67,18 +88,18 @@ class GameBoard(pyglet.window.Window):
         if (self.num - self.numFast) % max_per_row:
             slow_rows += 1
 
-        print "fast, slow rows", fast_rows, slow_rows
+        #print "fast, slow rows", fast_rows, slow_rows
 
         top = self.length - 22
         middle = self.length * 2 /3
         bottom = 0
 
-        print "top, middle, top", top, middle, bottom
+        #print "top, middle, top", top, middle, bottom
 
         top_diff = (top-middle) / fast_rows
         bottom_diff = (middle-bottom) / slow_rows
 
-        print "top_diff, bottom_diff", top_diff, bottom_diff
+        #print "top_diff, bottom_diff", top_diff, bottom_diff
 
         if top_diff < 30 or bottom_diff < 30:
             print "error in creating board\nboard is too small"
@@ -102,11 +123,13 @@ class GameBoard(pyglet.window.Window):
                 self.cylinders.append(temp)
 
     def update_score(self, score):
-        pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', (0, self.length -22,
-                                                             0, self.length,
-                                                             self.length, self.length,
-                                                             self.length, self.length-22)),
-                                                    ('c3B', WHITE*4))
+        pyglet.graphics.draw(4,
+                             pyglet.gl.GL_QUADS,
+                             ('v2i', (0, self.length -22,
+                                      0, self.length,
+                                      self.length, self.length,
+                                      self.length, self.length-22)),
+                             ('c3B', WHITE*4))
         self.score = score
         self.score_label = pyglet.text.Label("Score: {}".format(self.score),
                                              font_size=16,
@@ -114,13 +137,14 @@ class GameBoard(pyglet.window.Window):
                                              y=self.length-20)
         self.score_label.set_style('color', (0, 0, 0, 255))
         self.score_label.draw()
+        if self.date_label:
+            self.date_label.draw()
 
     def swap(self, i, j):
         pass
 
 if __name__ == "__main__":
     colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
-    print colors
     g = GameBoard(50, 20, colors)
     pyglet.app.run()
 
