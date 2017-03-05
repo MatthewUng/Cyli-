@@ -1,11 +1,12 @@
 import pyglet
 from UI_Cylinder import UI_Cylinder
 from Colors import *
+import time
 import random
 
 class GameBoard(pyglet.window.Window):
 
-    def __init__(self, num, numFast, colors, length=600):
+    def __init__(self, num, numFast, names, colors, length=600):
         super(GameBoard, self).__init__(length, length)
         self.length = length
         self.num = num
@@ -16,9 +17,10 @@ class GameBoard(pyglet.window.Window):
         self.date_label = None
         self.date = None
         self.colors = colors
+        self.names = names
+
 
     def on_draw(self):
-
         top_color = GREY + WHITE + WHITE + GREY
         pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', (0, self.length*2/3,
                                                              0, self.length,
@@ -36,9 +38,8 @@ class GameBoard(pyglet.window.Window):
         pyglet.text.Label("Fast", font_name="Arial", font_size=16, x=10, y=self.length*2/3+5).draw()
         pyglet.text.Label("Slow", font_name="Arial", font_size=16, x=10, y=self.length*2/3-25).draw()
 
+        self._init_rectangles()
 
-        self.update_score(0)
-        self._init_rectangles(self.colors)
 
     def update_date(self, date):
         pyglet.graphics.draw(4,
@@ -59,7 +60,11 @@ class GameBoard(pyglet.window.Window):
         self.date_label.set_style('color', (0, 0, 0, 255))
         self.date_label.draw()
 
-    def _init_rectangles(self, colors):
+    def _init_rectangles(self):
+        print "init rect()"
+
+        #new_names = list()
+        new_cylinders = list()
 
         max_per_row = 1
         while max_per_row*30 < self.length-200:
@@ -98,8 +103,12 @@ class GameBoard(pyglet.window.Window):
 
                 x = center - row_width/2 + 30*(i%max_per_row)
                 y = middle + (top_diff * curr_row) / 2 - 15
-                temp = UI_Cylinder(x, y, i, colors[i])
-                self.cylinders.append(temp)
+                print "here"
+                print self.names
+                print self.colors
+                print self.names[i], self.colors[self.names[i]]
+                temp = UI_Cylinder(x, y, self.names[i], self.colors[self.names[i]])
+                new_cylinders.append(temp)
             else:
 
                 k = i - self.numFast
@@ -107,10 +116,11 @@ class GameBoard(pyglet.window.Window):
                 x = center -row_width/2 + 30*(k%max_per_row)
                 y = bottom + (bottom_diff * curr_row) /2 -15
 
-                temp = UI_Cylinder(x, y, i, colors[i])
-                self.cylinders.append(temp)
+                temp = UI_Cylinder(x, y, self.names[i], self.colors[self.names[i]])
+                new_cylinders.append(temp)
 
-        self.swap(0, 10)
+
+        self.cylinders = new_cylinders
 
     def update_score(self, score):
         pyglet.graphics.draw(4,
@@ -131,18 +141,53 @@ class GameBoard(pyglet.window.Window):
             self.date_label.draw()
 
     def swap(self, i, j):
-        i_name, i_color = self.cylinders[i].get_attributes()
-        j_name, j_color = self.cylinders[j].get_attributes()
-        self.cylinders[i].change_color_name(j_color, j_name)
-        self.cylinders[j].change_color_name(i_color, i_name)
+        print "updating", i, j
+
+        if i == j:
+            pass
+
+
+
+        i_name, i_color = self.names[i], self.colors[self.names[i]]
+        print i_name, i_color
+
+        self.names[i] = self.names[j]
+        self.colors[i] = self.colors[j]
+        self.names[j] = i_name
+        self.colors[j] = i_color
+
+
+    def update(self, dt):
+        print "updating"
+        x = random.choice(range(20))
+        y = random.choice(range(20))
+
+        self.swap(x, y)
 
 if __name__ == "__main__":
     colors = list()
     colors.append(RED)
     for _ in range(19):
         colors.append(BLUE)
+    names = range(20)
 
     #colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
-    g = GameBoard(20, 10, colors)
-    pyglet.app.run()
-    print "fml"
+    g = GameBoard(20, 10, names, colors)
+    print g.cylinders
+    count = 0
+    while True:
+        pyglet.clock.tick()
+
+        for window in pyglet.app.windows:
+            window.switch_to()
+            window.dispatch_events()
+            window.dispatch_event('on_draw')
+            window.flip()
+
+
+        x = random.choice(range(20))
+        y = random.choice(range(20))
+        g.swap(x,y)
+
+        time.sleep(1)
+
