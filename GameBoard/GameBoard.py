@@ -4,6 +4,7 @@ from Colors import *
 import time
 import random
 
+
 class GameBoard(pyglet.window.Window):
 
     def __init__(self, num, numFast, names, colors, length=600):
@@ -64,9 +65,6 @@ class GameBoard(pyglet.window.Window):
         self.date_label.draw()
 
     def _init_rectangles(self):
-        print "init rect()"
-
-        #new_names = list()
         new_cylinders = list()
 
         max_per_row = 1
@@ -158,12 +156,12 @@ class GameBoard(pyglet.window.Window):
 
         return
 
-    def update(self, dt):
-        print "updating"
-        x = random.choice(range(20))
-        y = random.choice(range(20))
+    def update_color(self, d):
+        # d maps name to color(1-10)
 
-        self.swap(x, y)
+        for name, color_index in d.items():
+            k = self.names.index(name)
+            self.colors[k] = index_to_color(color_index)
 
     def set_score(self, score):
         self.score = score
@@ -180,7 +178,6 @@ if __name__ == "__main__":
 
     colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
     g = GameBoard(50, 20, names, colors)
-    g.set_date("3/4/2017")
     count = 0
 
     while True:

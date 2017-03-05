@@ -135,7 +135,7 @@ if __name__ == "__main__":
     game = Game(10, 3)
 
     for cylinder in game.getCylinders():
-        print str(cylinder)
+        print cylinder
 
     print "MaxTemp: " + str(game.maxTemp)
     print "MinTemp: " + str(game.minTemp)
