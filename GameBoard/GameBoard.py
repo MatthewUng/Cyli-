@@ -176,10 +176,10 @@ if __name__ == "__main__":
     colors.append(RED)
     for _ in range(19):
         colors.append(BLUE)
-    names = range(20)
+    names = range(50)
 
-    #colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
-    g = GameBoard(20, 10, names, colors)
+    colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
+    g = GameBoard(50, 20, names, colors)
     g.set_date("3/4/2017")
     count = 0
 
@@ -192,12 +192,11 @@ if __name__ == "__main__":
             window.dispatch_event('on_draw')
             window.flip()
 
-
-        x = random.choice(range(20))
-        y = random.choice(range(20))
+        x = random.choice(range(50))
+        y = random.choice(range(50))
         g.swap(x, y)
 
         count += 1
         g.set_score(count)
-        time.sleep(1)
+        time.sleep(0.4)
 

@@ -103,8 +103,9 @@ class Game:
         self.cylinders[cyl1Index].setPlacement(cyl2Plce)
         self.cylinders[cyl2Index].setPlacement(cyl1Plce)
 
-    def change_color(self, i, color):
+    def change_color(self, i, color10):
         """color is... something"""
+
 
     # Returns a list of all the cylinders
     def getCylinders(self):
