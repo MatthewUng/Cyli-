@@ -39,9 +39,13 @@ class GameBoard(pyglet.window.Window):
         pyglet.text.Label("Slow", font_name="Arial", font_size=16, x=10, y=self.length*2/3-25).draw()
 
         self._init_rectangles()
+        self.update_score()
+        self.update_date()
 
-
-    def update_date(self, date):
+    def update_date(self):
+        if not self.date:
+            return
+        date = self.date
         pyglet.graphics.draw(4,
                              pyglet.gl.GL_QUADS,
                              ('v2i', (0, self.length - 22,
@@ -50,7 +54,6 @@ class GameBoard(pyglet.window.Window):
                                       self.length, self.length - 22)),
                              ('c3B', WHITE * 4))
         self.score_label.draw()
-        self.date = date
         self.date_label = pyglet.text.Label(date,
                                           font_name="Arial",
                                           font_size=16,
@@ -103,10 +106,6 @@ class GameBoard(pyglet.window.Window):
 
                 x = center - row_width/2 + 30*(i%max_per_row)
                 y = middle + (top_diff * curr_row) / 2 - 15
-                print "here"
-                print self.names
-                print self.colors
-                print self.names[i], self.colors[self.names[i]]
                 temp = UI_Cylinder(x, y, self.names[i], self.colors[self.names[i]])
                 new_cylinders.append(temp)
             else:
@@ -122,7 +121,8 @@ class GameBoard(pyglet.window.Window):
 
         self.cylinders = new_cylinders
 
-    def update_score(self, score):
+    def update_score(self):
+
         pyglet.graphics.draw(4,
                              pyglet.gl.GL_QUADS,
                              ('v2i', (0, self.length -22,
@@ -130,7 +130,7 @@ class GameBoard(pyglet.window.Window):
                                       self.length, self.length,
                                       self.length, self.length-22)),
                              ('c3B', WHITE*4))
-        self.score = score
+
         self.score_label = pyglet.text.Label("Score: {}".format(self.score),
                                              font_size=16,
                                              x=10,
@@ -146,16 +146,17 @@ class GameBoard(pyglet.window.Window):
         if i == j:
             pass
 
+        i_index = self.names.index(i)
+        j_index = self.names.index(j)
+        i_color = self.colors[i_index]
 
+        #self.colors[i_index] = self.colors[j_index]
+        #self.colors[j_index] = i_color
 
-        i_name, i_color = self.names[i], self.colors[self.names[i]]
-        print i_name, i_color
+        self.names[i_index] = j
+        self.names[j_index] = i
 
-        self.names[i] = self.names[j]
-        self.colors[i] = self.colors[j]
-        self.names[j] = i_name
-        self.colors[j] = i_color
-
+        return
 
     def update(self, dt):
         print "updating"
@@ -163,6 +164,12 @@ class GameBoard(pyglet.window.Window):
         y = random.choice(range(20))
 
         self.swap(x, y)
+
+    def set_score(self, score):
+        self.score = score
+
+    def set_date(self, date):
+        self.date = date
 
 if __name__ == "__main__":
     colors = list()
@@ -173,8 +180,9 @@ if __name__ == "__main__":
 
     #colors = [random.choice(COLOR_GRADIENT) for _ in range(50)]
     g = GameBoard(20, 10, names, colors)
-    print g.cylinders
+    g.set_date("3/4/2017")
     count = 0
+
     while True:
         pyglet.clock.tick()
 
@@ -187,7 +195,9 @@ if __name__ == "__main__":
 
         x = random.choice(range(20))
         y = random.choice(range(20))
-        g.swap(x,y)
+        g.swap(x, y)
 
+        count += 1
+        g.set_score(count)
         time.sleep(1)
 

@@ -2,7 +2,6 @@ import pyglet
 
 class UI_Cylinder:
     def __init__(self, x, y, name, color):
-        print color
         self.length=20
         self.name = name
         self.color = color
